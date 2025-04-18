@@ -1,145 +1,123 @@
-# PyWebNative
+# PyWebNative - Flask + HTMX Template
 
-A lightweight template for building desktop applications using Python backend and web frontend technologies (HTML, CSS, JavaScript) with PyWebview.
+This template provides a starting point for building native-like desktop applications using Python, powered by a Flask backend and a dynamic frontend using HTMX, all packaged within a PyWebview window.
 
-## Overview
-
-This template provides the essential structure for creating desktop applications that leverage:
-
-- **Python Backend**: For business logic, data processing, and system access
-- **Web Frontend**: Modern HTML, CSS, and JavaScript for the user interface
-- **PyWebview**: The bridge that connects the two worlds
+It allows you to leverage Python for backend logic while using standard web technologies (HTML, CSS) enhanced with HTMX for creating interactive UIs with minimal JavaScript.
 
 ## Features
 
-- Clean, modular project structure
-- Python API class for backend functionality
-- Modern, responsive UI with CSS
-- JavaScript frontend with API communication examples
-- Ready-to-use examples of common operations:
-  - System information retrieval
-  - Data echo (Python ↔ JavaScript communication)
-  - Data saving functionality
+*   **Native Window:** Uses `pywebview` to create a lightweight native OS window.
+*   **Python Backend:** Employs `Flask` for handling requests, routing, and server-side logic.
+*   **Dynamic Frontend:** Uses `HTMX` to enable modern browser features (AJAX, CSS Transitions, WebSockets) directly from HTML, reducing the need for custom JavaScript.
+*   **Standard Web Tech:** Build your UI with HTML, CSS, and Flask's Jinja2 templating.
+*   **Cross-Platform:** Compatible with Windows, macOS, and Linux.
 
 ## Project Structure
 
 ```
-PyWebNative/
-├── app.py              # Main application entry point
-├── api.py              # Python backend API class
-├── user_methods.py     # Custom user methods
-├── requirements.txt    # Python dependencies
-├── frontend/           # Frontend web assets
-│   ├── index.html      # Main HTML file
-│   ├── css/
-│   │   └── style.css   # CSS styles
-│   └── js/
-│       └── app.js      # Frontend JavaScript
-└── README.md           # Documentation
+/
+├── .venv/               # Virtual environment directory
+├── static/              # Static files (CSS, JS, images)
+│   ├── css/style.css
+│   └── js/              # (Optional JS if needed)
+├── templates/           # HTML templates (Jinja2)
+│   └── index.html
+├── app.py               # Main application entry point (Initializes Flask & PyWebview)
+├── routes.py            # Flask Blueprint containing application routes/view functions
+├── requirements.txt     # Python dependencies
+├── user_methods.py      # (Optional) For non-route Python helper functions/classes
+└── README.md            # This file
 ```
-
-## Architecture
-
-```mermaid
-flowchart TD
-    subgraph Application
-        APP[app.py]
-        PYV[PyWebview]
-        APP -->|initializes| PYV
-    end
-    subgraph Backend
-        API["api.py (API Class)"]
-    end
-    subgraph Frontend
-        HTML[index.html]
-        CSS[css/style.css]
-        JS[js/app.js]
-        HTML --> CSS
-        HTML --> JS
-    end
-    PYV -->|exposes API| API
-    JS -->|window.pywebview.api| API
-    API -->|JSON response| JS
-```
-
-User Workflow:
-1. Run `python app.py` to launch the desktop app
-2. Backend (`api.py`) methods exposed via PyWebview
-3. Frontend loads `index.html`, `style.css`, and `app.js`
-4. JS calls backend methods and updates the UI based on JSON responses
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.6 or higher
-- pip (Python package manager)
+*   Python 3.7+
+*   `pip` and `venv` (usually included with Python)
 
-### Installation
+### Setup
 
-1. Clone or download this template
-2. Install the required dependencies:
+1.  **Clone the repository (or use this template):**
+    ```bash
+    # git clone ... (if applicable)
+    cd PyWebNative # Navigate to the project directory
+    ```
 
-```bash
-pip install -r requirements.txt
-```
+2.  **Create and activate a virtual environment:**
+    ```bash
+    python -m venv .venv
+    # On Windows
+    .\.venv\Scripts\activate
+    # On macOS/Linux
+    # source .venv/bin/activate
+    ```
+
+3.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ### Running the Application
-
-Simply run the main application file:
 
 ```bash
 python app.py
 ```
 
-## Customizing the Template
+This will start the Flask development server and open the `pywebview` window, loading the application.
 
-### Backend (Python)
+## Development Guide
 
-Add your custom backend methods in the `user_methods.py` file by extending the `UserMethods` class. For example:
+### Adding New Features
 
-```python
-# user_methods.py
-class UserMethods:
-    def my_custom_method(self, param1, param2):
-        # Your custom logic here
-        return {"result": "Some result", "params": [param1, param2]}
-```
+1.  **Define a Route:** Add a new function decorated with `@bp.route('/your-new-route', methods=['GET', 'POST'])` in `routes.py`.
+    *   This function will handle requests to `/your-new-route`.
+    *   It should typically return an HTML fragment or redirect.
 
-The `API` class in `api.py` already mixes in `UserMethods`, so any method you add will be accessible from JavaScript via:
+2.  **Update the Frontend:** In `templates/index.html` (or other templates):
+    *   Add HTML elements.
+    *   Use HTMX attributes (e.g., `hx-get`, `hx-post`, `hx-target`, `hx-swap`) on elements (like buttons or forms) to trigger requests to your new route.
+    *   Specify a target element where the HTML response from your route should be placed.
 
-```javascript
-const result = await window.pywebview.api.my_custom_method("value1", "value2");
-```
+3.  **Add Static Files:** Place CSS, JavaScript (if absolutely necessary), or images in the `static/` directory and reference them in your templates using `{{ url_for('static', filename='path/to/your/file') }}`.
 
-### Frontend
+### Example Workflow (Adding a 'Clear Data' Button)
 
-- **HTML**: Edit `frontend/index.html` to create your UI structure
-- **CSS**: Modify `frontend/css/style.css` for styling
-- **JavaScript**: Update `frontend/js/app.js` to add frontend logic
+1.  **routes.py:**
+    ```python
+    import os
+    # ... other imports ...
 
-To call Python methods from JavaScript:
+    @bp.route('/clear_data', methods=['POST'])
+    def clear_data_route():
+        try:
+            if os.path.exists('data.json'):
+                os.remove('data.json')
+                return "<p style='color: orange;'>Data cleared.</p>"
+            else:
+                return "<p style='color: grey;'>No data file to clear.</p>"
+        except Exception as e:
+            return f"<p style='color: red;'>Error clearing data: {e}</p>"
+    ```
 
-```javascript
-// Call a Python method and get the result
-const result = await window.pywebview.api.my_custom_method("value1", "value2");
-console.log(result);
-```
+2.  **templates/index.html** (Inside the 'Save Data Test' section):
+    ```html
+    <section class="card">
+        <h2>Save Data Test</h2>
+        <div class="form-group" hx-swap="innerHTML">
+            <textarea id="data-input" name="data-input" placeholder="Enter JSON data to save..."></textarea>
+            <!-- Existing Save Button -->
+            <button hx-post="/save_data" hx-include="[name='data-input']" hx-target="#save-result" hx-indicator="#save-result">Save Data</button>
+            <!-- New Clear Button -->
+            <button hx-post="/clear_data" hx-target="#save-result" hx-indicator="#save-result">Clear Saved Data</button>
+        </div>
+        <div id="save-result" class="result"></div>
+    </section>
+    ```
 
-## Building for Distribution
+## Further Information
 
-To create standalone executables, you can use PyInstaller:
-
-```bash
-pip install pyinstaller
-pyinstaller --add-data "frontend;frontend" --windowed app.py
-```
-
-## License
-
-This template is provided as open source. Feel free to use it for any project.
-
-## Resources
-
-- [PyWebview Documentation](https://pywebview.flowrl.com/guide)
-- [HTML/CSS/JavaScript MDN Web Docs](https://developer.mozilla.org/)
+*   **PyWebview:** [https://pywebview.flowrl.com/](https://pywebview.flowrl.com/)
+*   **Flask:** [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
+*   **HTMX:** [https://htmx.org/](https://htmx.org/)
+*   **Jinja2 (Templating):** [https://jinja.palletsprojects.com/](https://jinja.palletsprojects.com/)

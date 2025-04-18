@@ -2,8 +2,9 @@ import os
 import json
 import sys
 import time
+from user_methods import UserMethods
 
-class API:
+class BaseAPI:
     """
     Python backend API that can be called from JavaScript
     All methods in this class can be called from JavaScript
@@ -39,4 +40,5 @@ class API:
         except Exception as e:
             return {'success': False, 'error': str(e)}
     
-    # Add more API methods as needed for your application below
+class API(BaseAPI, UserMethods):
+    pass

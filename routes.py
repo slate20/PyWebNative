@@ -2,6 +2,7 @@ import sys
 import time
 import json
 from flask import Blueprint, render_template, request, jsonify
+from logic import save_json_data, get_formatted_system_info, get_echo_response
 
 # Create a Blueprint instance
 # The first argument 'main' is the name of the blueprint.
@@ -16,38 +17,34 @@ def index():
     # associated with this blueprint (or the app's default if not found here)
     return render_template('index.html')
 
+# Routes for App demo
 @bp.route('/get_system_info', methods=['GET'])
 def get_system_info_route():
-    """Flask route equivalent of BaseAPI.get_system_info, returns HTML fragment."""
-    info = {
-        'python_version': sys.version.split()[0],
-        'platform': sys.platform,
-        'time': time.strftime('%Y-%m-%d %H:%M:%S')
-    }
-    html_fragment = f"Python Version: {info['python_version']}\n"
-    html_fragment += f"Platform: {info['platform']}\n"
-    html_fragment += f"Current Time: {info['time']}"
-    return html_fragment
+    """Handles request for system info, calls logic.get_formatted_system_info."""
+    # Call the business logic function
+    html_response = get_formatted_system_info()
+    return html_response
 
 @bp.route('/echo', methods=['POST'])
 def echo_route():
-    """Flask route equivalent of BaseAPI.echo, returns HTML fragment."""
-    message = request.form.get('echo-input', '')
-    return f"<p>Server received: <code>{message}</code></p>"
+    """Handles echo request, calls logic.get_echo_response."""
+    message = request.form.get('echo-input', '') 
+    # Call the business logic function
+    html_response = get_echo_response(message)
+    return html_response
 
 @bp.route('/save_data', methods=['POST'])
 def save_data_route():
-    """Flask route equivalent of BaseAPI.save_data, returns HTML fragment."""
-    data_to_save_text = request.form.get('data-input', '{}')
-    try:
-        data_obj = json.loads(data_to_save_text)
-        # Consider saving data to a more robust location or subfolder
-        with open('data.json', 'w') as f:
-            json.dump(data_obj, f, indent=2)
-        return "<p style='color: green;'>Data saved successfully!</p>"
-    except json.JSONDecodeError:
-        return "<p style='color: red;'>Error: Invalid JSON format.</p>"
-    except Exception as e:
-        return f"<p style='color: red;'>Error saving data: {e}</p>"
-
-# You can add more routes here related to the main functionality
+    """Handles request to save data, calls logic.save_json_data."""
+    data_to_save_text = request.form.get('data-input', '{}') 
+    
+    # Call the business logic function
+    success, message = save_json_data(data_to_save_text)
+    
+    # Format the response based on the result from the logic function
+    if success:
+        html_response = f"<p style='color: green;'>{message}</p>"
+    else:
+        html_response = f"<p style='color: red;'>{message}</p>"
+        
+    return html_response

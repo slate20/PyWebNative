@@ -37,6 +37,36 @@ PyWebNative/
 └── README.md           # Documentation
 ```
 
+## Architecture
+
+```mermaid
+flowchart TD
+    subgraph Application
+        APP[app.py]
+        PYV[PyWebview]
+        APP -->|initializes| PYV
+    end
+    subgraph Backend
+        API["api.py (API Class)"]
+    end
+    subgraph Frontend
+        HTML[index.html]
+        CSS[css/style.css]
+        JS[js/app.js]
+        HTML --> CSS
+        HTML --> JS
+    end
+    PYV -->|exposes API| API
+    JS -->|window.pywebview.api| API
+    API -->|JSON response| JS
+```
+
+User Workflow:
+1. Run `python app.py` to launch the desktop app
+2. Backend (`api.py`) methods exposed via PyWebview
+3. Frontend loads `index.html`, `style.css`, and `app.js`
+4. JS calls backend methods and updates the UI based on JSON responses
+
 ## Getting Started
 
 ### Prerequisites

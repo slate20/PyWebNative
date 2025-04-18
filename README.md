@@ -38,19 +38,30 @@ It allows you to leverage Python for backend logic while using standard web tech
 
 ### Setup
 
-1.  **Clone the repository (or use this template):**
+1.  **Clone the repository and remove the .git folder:**
     ```bash
-    # git clone ... (if applicable)
-    cd PyWebNative # Navigate to the project directory
+    # Linux/Mac
+    git clone https://github.com/slate20/PyWebNative/tree/Flask NEW_PROJECT_NAME
+    cd NEW_PROJECT_NAME
+    rm -rf .git
+    ```
+    ```powershell
+    # Windows
+    git clone https://github.com/slate20/PyWebNative/tree/Flask NEW_PROJECT_NAME
+    cd NEW_PROJECT_NAME
+    rmdir /s /q .git
     ```
 
 2.  **Create and activate a virtual environment:**
     ```bash
+    # Linux/Mac
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+    ```powershell
+    # Windows
     python -m venv .venv
-    # On Windows
-    .\.venv\Scripts\activate
-    # On macOS/Linux
-    # source .venv/bin/activate
+    .venv\Scripts\activate
     ```
 
 3.  **Install dependencies:**
@@ -61,6 +72,11 @@ It allows you to leverage Python for backend logic while using standard web tech
 ### Running the Application
 
 ```bash
+# Linux/Mac
+python3 app.py
+```
+```powershell
+# Windows
 python app.py
 ```
 
@@ -114,6 +130,27 @@ This will start the Flask development server and open the `pywebview` window, lo
         <div id="save-result" class="result"></div>
     </section>
     ```
+
+### Starting Your Own Project (Removing Demo Code)
+
+This template includes some demo functionality (getting system info, echoing input, saving data) to showcase how Flask, HTMX, and pywebview work together. To start a fresh project, you can remove the following:
+
+1.  **Demo Routes in `routes.py`:**
+    *   Delete the `@bp.route('/get_system_info')`, `@bp.route('/echo')`, and `@bp.route('/save_data')` blocks.
+    *   Remove the corresponding import from `logic` if it's no longer needed (e.g., `get_formatted_system_info`, `get_echo_response`, `save_json_data`).
+
+2.  **Demo Logic in `logic.py`:**
+    *   Delete the `get_formatted_system_info()`, `get_echo_response()`, and `save_json_data()` functions.
+    *   Remove unused imports like `sys` and `time` if they were only for the demo functions.
+
+3.  **Demo UI Elements in `templates/index.html`:**
+    *   Remove the `<div>` sections related to "System Info", "Echo Test", and "Save Data".
+    *   Clean up any associated HTMX attributes (`hx-get`, `hx-post`, `hx-target`, `hx-swap`) from the remaining HTML if they pointed to the deleted routes.
+
+4.  **Demo Data File:**
+    *   Delete the `data.json` file (if it was created during testing).
+
+After removing these, you'll have a clean structure with `app.py`, `routes.py` (containing just the root `/` route initially), `logic.py` (ready for your functions), and `templates/index.html` (ready for your UI) to build upon.
 
 ## Further Information
 

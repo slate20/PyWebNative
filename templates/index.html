@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask + PyWebview App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Flask + PyWebview App</h1>
+        </header>
+        
+        <main>
+            <section class="card">
+                <h2>System Information</h2>
+                <pre id="system-info"
+                     hx-trigger="load"
+                     hx-get="/get_system_info"
+                     hx-target="this"
+                     hx-swap="innerHTML">Loading system info...</pre>
+                <button hx-get="/get_system_info"
+                        hx-target="#system-info"
+                        hx-swap="innerHTML"
+                        hx-indicator="#system-info">Refresh Info</button>
+            </section>
+            
+            <section class="card">
+                <h2>Echo Test</h2>
+                <div class="form-group" hx-target="#echo-result" hx-swap="innerHTML">
+                    <input type="text" id="echo-input" name="echo-input" placeholder="Type a message...">
+                    <button hx-post="/echo"
+                            hx-include="[name='echo-input']"
+                            hx-indicator="#echo-result">Send</button>
+                </div>
+                <div id="echo-result" class="result"></div>
+            </section>
+            
+            <section class="card">
+                <h2>Save Data Test</h2>
+                <div class="form-group" hx-target="#save-result" hx-swap="innerHTML">
+                    <textarea id="data-input" name="data-input" placeholder="Enter JSON data to save..."></textarea>
+                    <button hx-post="/save_data"
+                            hx-include="[name='data-input']"
+                            hx-indicator="#save-result">Save Data</button>
+                </div>
+                <div id="save-result" class="result"></div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Built with Flask + PyWebview + HTMX</p>
+        </footer>
+    </div>
+
+    <!-- We don't need the old app.js anymore -->
+    <!-- <script src="{{ url_for('static', filename='js/app.js') }}"></script> -->
+</body>
+</html>

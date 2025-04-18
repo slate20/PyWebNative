@@ -27,6 +27,7 @@ This template provides the essential structure for creating desktop applications
 PyWebNative/
 ├── app.py              # Main application entry point
 ├── api.py              # Python backend API class
+├── user_methods.py     # Custom user methods
 ├── requirements.txt    # Python dependencies
 ├── frontend/           # Frontend web assets
 │   ├── index.html      # Main HTML file
@@ -95,14 +96,20 @@ python app.py
 
 ### Backend (Python)
 
-Edit the `api.py` file to add your own Python methods. Any method in the `API` class will be accessible from JavaScript.
-
-Example:
+Add your custom backend methods in the `user_methods.py` file by extending the `UserMethods` class. For example:
 
 ```python
-def my_custom_method(self, param1, param2):
-    # Your custom logic here
-    return {"result": "Some result", "params": [param1, param2]}
+# user_methods.py
+class UserMethods:
+    def my_custom_method(self, param1, param2):
+        # Your custom logic here
+        return {"result": "Some result", "params": [param1, param2]}
+```
+
+The `API` class in `api.py` already mixes in `UserMethods`, so any method you add will be accessible from JavaScript via:
+
+```javascript
+const result = await window.pywebview.api.my_custom_method("value1", "value2");
 ```
 
 ### Frontend

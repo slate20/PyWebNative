@@ -1,2 +1,0 @@
-class UserMethods:
-    pass

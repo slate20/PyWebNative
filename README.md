@@ -41,13 +41,13 @@ It allows you to leverage Python for backend logic while using standard web tech
 1.  **Clone the repository and remove the .git folder:**
     ```bash
     # Linux/Mac
-    git clone https://github.com/slate20/PyWebNative/tree/Flask NEW_PROJECT_NAME
+    git clone https://github.com/slate20/PyWebNative NEW_PROJECT_NAME
     cd NEW_PROJECT_NAME
     rm -rf .git
     ```
     ```powershell
     # Windows
-    git clone https://github.com/slate20/PyWebNative/tree/Flask NEW_PROJECT_NAME
+    git clone https://github.com/slate20/PyWebNative NEW_PROJECT_NAME
     cd NEW_PROJECT_NAME
     rmdir /s /q .git
     ```

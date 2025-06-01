@@ -31,11 +31,6 @@ It allows you to leverage Python for backend logic while using standard web tech
 
 ## Getting Started
 
-### Prerequisites
-
-*   Python 3.7+
-*   `pip` and `venv` (usually included with Python)
-
 ### Setup
 
 1.  **Clone the repository and remove the .git folder:**
